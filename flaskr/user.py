@@ -1,6 +1,7 @@
 import os
 from dotenv import load_dotenv
 from os.path import join, dirname
+from .book_request import ALL_CATEGORIES
 import pyrebase
 
 dotenv_path = join(dirname(__file__), '.env')
@@ -18,6 +19,12 @@ config = {
 
 firebase = pyrebase.initialize_app(config)
 db = firebase.database()
+
+def validate_category(category):
+	for cat in ALL_CATEGORIES:
+		if cat["name"] == category:
+			return True
+	return False
 
 def update_user(username, data):
 	db.child("users").child(username).set(data)
@@ -44,6 +51,7 @@ def register(username, password):
 	return "User created: %s" % username
 
 def add_category(username, category):
+	if not validate_category(category): return "Invalid category"
 	user = getuser(username)
 	if user != None:
 		if user["category"]:

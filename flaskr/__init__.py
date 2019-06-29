@@ -1,12 +1,12 @@
 from flask import Flask, jsonify
-from .book_request import get_categories, get_bestseller
+from .book_request import ALL_CATEGORIES, get_bestseller
 from .user import getusers, register, add_category, list_categories
 
 app = Flask(__name__)
 
 @app.route('/categories')
 def categories():
-	return jsonify(get_categories())
+	return jsonify(ALL_CATEGORIES)
 
 @app.route('/bestseller/<category>')
 def bestseller(category):

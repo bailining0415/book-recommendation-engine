@@ -25,6 +25,8 @@ def get_bestseller(category):
 	datas = json.loads(response.text)['results']
 	return datas
 
+ALL_CATEGORIES = get_categories()
+
 if __name__ == '__main__':
    get_categories()
-   get_bestseller()
+   ALL_CATEGORIES
