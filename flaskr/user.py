@@ -1,8 +1,10 @@
 import os
 from dotenv import load_dotenv
 from os.path import join, dirname
-from .book_request import ALL_CATEGORIES
+from .book_request import ALL_CATEGORIES, get_bestseller
 import pyrebase
+import json
+import operator
 
 dotenv_path = join(dirname(__file__), '.env')
 FIREBASE_API_KEY = os.getenv("FIREBASE_API_KEY")
@@ -20,9 +22,19 @@ config = {
 firebase = pyrebase.initialize_app(config)
 db = firebase.database()
 
+# extract only needed data from books api response to render
+def construct_book(book):
+	return {
+		"title": book["title"],
+		"description": book["description"],
+		"book_image": book["book_image"],
+		"rank": book["rank"],
+		"author": book["author"]
+	}
+
 def validate_category(category):
 	for cat in ALL_CATEGORIES:
-		if cat["name"] == category:
+		if cat["encoded"] == category:
 			return True
 	return False
 
@@ -67,8 +79,23 @@ def list_categories(username):
 		return user["category"].split(",")
 	return None
 
+def list_recommendations(username):
+	categories = list_categories(username)
+	if categories == None:
+		return None
+	all_books = []
+	for cat in categories:
+		res = get_bestseller(cat)
+		top_books = res["books"][:3]
+		for b in top_books:
+			book = construct_book(b)
+			all_books.append(book)
+	results = sorted(all_books, key=lambda k: k['rank'], reverse=False)
+	return results
+
 if __name__ == '__main__':
    register()
    getusers()
    add_category()
    list_categories()
+   list_recommendations()
