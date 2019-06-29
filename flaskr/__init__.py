@@ -1,6 +1,6 @@
 from flask import Flask, jsonify
 from .book_request import ALL_CATEGORIES, get_bestseller
-from .user import getusers, register, add_category, list_categories
+from .user import getusers, register, add_category, list_categories, list_recommendations
 
 app = Flask(__name__)
 
@@ -27,6 +27,13 @@ def set_interest(username, category):
 @app.route('/listinterest/<username>')
 def list_interest(username):
 	res = list_categories(username)
+	if res == None:
+		return "User not found"
+	return res
+
+@app.route('/recommend/<username>')
+def recommend(username):
+	res = list_recommendations(username)
 	if res == None:
 		return "User not found"
 	return jsonify(res)
