@@ -14,7 +14,7 @@ config = {
   "databaseURL": "https://book-recommendation-engine.firebaseio.com",
   "projectId": "book-recommendation-engine",
   "storageBucket": "book-recommendation-engine.appspot.com",
-  "serviceAccount": "app/firebase-private-key.json",
+  "serviceAccount": "firebase-private-key.json",
   "messagingSenderId": "1052538486568"
 }
 
@@ -31,14 +31,24 @@ def categories():
 def bestseller(category):
 	return jsonify(get_bestseller(category))
 
-@app.route('/<name>')
-def hello_world(name):
-   return 'Hello %s!' % name
+@app.route('/register/<username>/<password>')
+def register(username, password):
+	all_users = db.child("users").get().each()
+	if all_users != None:
+		for user in all_users:
+			if user.key() == username:
+				return "username exists"
+	db.child("users").child(username).set({ "name": username, "password": password })
+	return "User created: %s" % username
 
-@app.route('/newbook')
-def add_book():
-	db.child("book").push({"book": "hello"})
-	return "Success"
+@app.route('/getuser')
+def get_users():
+	all_users = db.child("users").get().each()
+	user_list = []
+	if all_users != None:
+		for user in all_users:
+			user_list.append(user.val())
+	return jsonify(user_list)
 
 if __name__ == '__main__':
    app.run()
