@@ -1,54 +1,35 @@
 from flask import Flask, jsonify
-from .book_request import get_categories, get_bestseller
-import os
-import pyrebase
-from dotenv import load_dotenv
-from os.path import join, dirname
-
-dotenv_path = join(dirname(__file__), '.env')
-FIREBASE_API_KEY = os.getenv("FIREBASE_API_KEY")
-
-config = {
-  "apiKey": os.getenv('FIREBASE_API_KEY'),
-  "authDomain": "book-recommendation-engine.firebaseapp.com",
-  "databaseURL": "https://book-recommendation-engine.firebaseio.com",
-  "projectId": "book-recommendation-engine",
-  "storageBucket": "book-recommendation-engine.appspot.com",
-  "serviceAccount": "firebase-private-key.json",
-  "messagingSenderId": "1052538486568"
-}
-
-firebase = pyrebase.initialize_app(config)
-db = firebase.database()
+from .book_request import ALL_CATEGORIES, get_bestseller
+from .user import getusers, register, add_category, list_categories
 
 app = Flask(__name__)
 
 @app.route('/categories')
 def categories():
-	return jsonify(get_categories())
+	return jsonify(ALL_CATEGORIES)
 
 @app.route('/bestseller/<category>')
 def bestseller(category):
 	return jsonify(get_bestseller(category))
 
 @app.route('/register/<username>/<password>')
-def register(username, password):
-	all_users = db.child("users").get().each()
-	if all_users != None:
-		for user in all_users:
-			if user.key() == username:
-				return "username exists"
-	db.child("users").child(username).set({ "name": username, "password": password })
-	return "User created: %s" % username
+def register_user(username, password):
+	return register(username, password)
 
-@app.route('/getuser')
-def get_users():
-	all_users = db.child("users").get().each()
-	user_list = []
-	if all_users != None:
-		for user in all_users:
-			user_list.append(user.val())
-	return jsonify(user_list)
+@app.route('/getusers')
+def get_all_users():
+	return jsonify(getusers())
+
+@app.route('/setinterest/<username>/<category>')
+def set_interest(username, category):
+	return add_category(username, category)
+
+@app.route('/listinterest/<username>')
+def list_interest(username):
+	res = list_categories(username)
+	if res == None:
+		return "User not found"
+	return jsonify(res)
 
 if __name__ == '__main__':
    app.run()
