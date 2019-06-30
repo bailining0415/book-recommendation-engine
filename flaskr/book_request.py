@@ -15,9 +15,9 @@ best_seller_url = "%s/lists/current/{}.json%s" % (base_url, api_key_param)
 def get_categories():
 	response = requests.get(category_url)
 	datas = json.loads(response.text)['results']
-	list_names = []
+	list_names = {}
 	for data in datas:
-		list_names.append({ 'name': data['list_name'], 'encoded': data['list_name_encoded'] })
+		list_names[data['list_name']] = data['list_name_encoded']
 	return list_names
 
 def get_bestseller(category):

@@ -1,4 +1,5 @@
-from flask import Flask, jsonify
+# http://flask.pocoo.org/docs/1.0/quickstart/
+from flask import Flask, jsonify, render_template, request, flash, url_for, redirect
 from .book_request import ALL_CATEGORIES, get_bestseller
 from .user import getusers, register, add_category, list_categories, list_recommendations
 
@@ -12,17 +13,34 @@ def categories():
 def bestseller(category):
 	return jsonify(get_bestseller(category))
 
-@app.route('/register/<username>/<password>')
-def register_user(username, password):
-	return register(username, password)
+@app.route('/register', methods=['POST'])
+def register_user():
+	form = request.form
+	username = ""
+	password = ""
+	for key,value in form.items():
+		if key == "username":
+			username = value
+		if key == "password":
+			password = value
+	register(username, password)
+	# if register(username, password):
+	# 	flash("You have succesfully register %s" % username)
+	# else:
+	# 	flash("Username exists")
+	return redirect(url_for('home'))
 
 @app.route('/getusers')
 def get_all_users():
 	return jsonify(getusers())
 
-@app.route('/setinterest/<username>/<category>')
-def set_interest(username, category):
-	return add_category(username, category)
+@app.route('/setinterest', methods=['POST'])
+def set_interest():
+	form = request.form
+	username = form["username"]
+	category = form["category"]
+	add_category(username, category)
+	return redirect(url_for('home'))
 
 @app.route('/listinterest/<username>')
 def list_interest(username):
@@ -31,12 +49,18 @@ def list_interest(username):
 		return "User not found"
 	return res
 
-@app.route('/recommend/<username>')
-def recommend(username):
+@app.route('/recommend', methods=['POST'])
+def recommend():
+	form = request.form
+	username = form["username"]
 	res = list_recommendations(username)
 	if res == None:
 		return "User not found"
-	return jsonify(res)
+	return render_template('recommendation.html', results = res)
+
+@app.route('/')
+def home():
+	return render_template('index.html', categories = ALL_CATEGORIES)
 
 if __name__ == '__main__':
    app.run()
