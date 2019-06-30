@@ -23,13 +23,14 @@ firebase = pyrebase.initialize_app(config)
 db = firebase.database()
 
 # extract only needed data from books api response to render
-def construct_book(book):
+def construct_book(book, cat):
 	return {
 		"title": book["title"],
 		"description": book["description"],
 		"book_image": book["book_image"],
 		"rank": book["rank"],
-		"author": book["author"]
+		"author": book["author"],
+		"category": cat
 	}
 
 def validate_category(category):
@@ -85,7 +86,7 @@ def list_recommendations(username):
 		res = get_bestseller(cat)
 		top_books = res["books"][:3]
 		for b in top_books:
-			book = construct_book(b)
+			book = construct_book(b, cat)
 			all_books.append(book)
 	# https://stackoverflow.com/questions/26924812/python-sort-list-of-json-by-value
 	results = sorted(all_books, key=lambda k: k['rank'], reverse=False)
