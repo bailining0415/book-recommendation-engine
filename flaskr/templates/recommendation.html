@@ -15,7 +15,12 @@
     <div class="container">
       <div>
         {% for value in results %}
-          <p>{{ value }}</p>
+        <div style="margin-bottom:15px;border: 5px solid red">
+          <p>title: <span>{{ value.title }}</span></p>
+          <p>description: <span>{{ value.description }}</span></p>
+          <p>author: <span>{{ value.author }}</span></p>
+          <p>book_image: <img src="{{ value.book_image }}" alt="{{ value.title }}"></p>
+        </div>
         {% endfor %}
       </div>
     </div>
