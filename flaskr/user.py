@@ -33,10 +33,7 @@ def construct_book(book):
 	}
 
 def validate_category(category):
-	for cat in ALL_CATEGORIES:
-		if cat["encoded"] == category:
-			return True
-	return False
+	return category in ALL_CATEGORIES
 
 def update_user(username, data):
 	db.child("users").child(username).set(data)
@@ -58,9 +55,9 @@ def getuser(username):
 
 def register(username, password):
 	if getuser(username) != None:
-		return "Username exists"
+		return False
 	update_user(username, { "name": username, "password": password, "category": "" })
-	return "User created: %s" % username
+	return True
 
 def add_category(username, category):
 	if not validate_category(category): return "Invalid category"
