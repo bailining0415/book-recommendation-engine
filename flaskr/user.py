@@ -33,7 +33,7 @@ def construct_book(book):
 	}
 
 def validate_category(category):
-	return category in ALL_CATEGORIES
+	return category in ALL_CATEGORIES.values()
 
 def update_user(username, data):
 	db.child("users").child(username).set(data)

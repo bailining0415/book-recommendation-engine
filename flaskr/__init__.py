@@ -18,11 +18,11 @@ def register_user():
 	username = ""
 	password = ""
 	for key,value in form.items():
-		print("something")
 		if key == "username":
 			username = value
 		if key == "password":
 			password = value
+	register(username, password)
 	# if register(username, password):
 	# 	flash("You have succesfully register %s" % username)
 	# else:
@@ -33,9 +33,18 @@ def register_user():
 def get_all_users():
 	return jsonify(getusers())
 
-@app.route('/setinterest/<username>/<category>')
-def set_interest(username, category):
-	return add_category(username, category)
+@app.route('/setinterest', methods=['POST'])
+def set_interest():
+	form = request.form
+	username = form["username"]
+	category = form["category"]
+	# for key,value in form.items():
+	# 	if key == "username":
+	# 		username = value
+	# 	if key == "category":
+	# 		category = value
+	add_category(username, category)
+	return redirect(url_for('home'))
 
 @app.route('/listinterest/<username>')
 def list_interest(username):
