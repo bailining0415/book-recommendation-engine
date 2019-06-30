@@ -87,6 +87,7 @@ def list_recommendations(username):
 		for b in top_books:
 			book = construct_book(b)
 			all_books.append(book)
+	# https://stackoverflow.com/questions/26924812/python-sort-list-of-json-by-value
 	results = sorted(all_books, key=lambda k: k['rank'], reverse=False)
 	return results
 

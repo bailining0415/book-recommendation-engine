@@ -1,3 +1,4 @@
+# http://flask.pocoo.org/docs/1.0/quickstart/
 from flask import Flask, jsonify, render_template, request, flash, url_for, redirect
 from .book_request import ALL_CATEGORIES, get_bestseller
 from .user import getusers, register, add_category, list_categories, list_recommendations
@@ -38,11 +39,6 @@ def set_interest():
 	form = request.form
 	username = form["username"]
 	category = form["category"]
-	# for key,value in form.items():
-	# 	if key == "username":
-	# 		username = value
-	# 	if key == "category":
-	# 		category = value
 	add_category(username, category)
 	return redirect(url_for('home'))
 
@@ -53,12 +49,14 @@ def list_interest(username):
 		return "User not found"
 	return res
 
-@app.route('/recommend/<username>')
-def recommend(username):
+@app.route('/recommend', methods=['POST'])
+def recommend():
+	form = request.form
+	username = form["username"]
 	res = list_recommendations(username)
 	if res == None:
 		return "User not found"
-	return jsonify(res)
+	return render_template('recommendation.html', results = res)
 
 @app.route('/')
 def home():
