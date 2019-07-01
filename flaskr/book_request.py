@@ -7,6 +7,10 @@ import json
 dotenv_path = join(dirname(__file__), '.env')
 API_KEY = os.getenv("NYT_API_KEY")
 
+is_prod = os.environ.get('IS_HEROKU', None)
+if is_prod:
+	API_KEY = os.environ.get('NYT_API_KEY', None)
+
 base_url = "https://api.nytimes.com/svc/books/v3"
 api_key_param = "?api-key=%s" % API_KEY
 category_url = "%s/lists/names.json%s" % (base_url, api_key_param)

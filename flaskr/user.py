@@ -9,6 +9,10 @@ import operator
 dotenv_path = join(dirname(__file__), '.env')
 FIREBASE_API_KEY = os.getenv("FIREBASE_API_KEY")
 
+is_prod = os.environ.get('IS_HEROKU', None)
+if is_prod:
+	FIREBASE_API_KEY = os.environ.get('FIREBASE_API_KEY', None)
+
 config = {
   "apiKey": os.environ['FIREBASE_API_KEY'],
   "authDomain": "book-recommendation-engine.firebaseapp.com",
