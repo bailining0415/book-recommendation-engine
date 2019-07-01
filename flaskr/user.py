@@ -1,3 +1,5 @@
+# With help of reference link https://blog.upperlinecode.com/flask-and-firebase-and-pyrebase-oh-my-f30548d68ea9
+
 import os
 from dotenv import load_dotenv
 from os.path import join, dirname

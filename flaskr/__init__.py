@@ -1,4 +1,4 @@
-# http://flask.pocoo.org/docs/1.0/quickstart/
+# get code guidance from http://flask.pocoo.org/docs/1.0/quickstart/
 from flask import Flask, jsonify, render_template, request, flash, url_for, redirect
 from .book_request import ALL_CATEGORIES, get_bestseller
 from .user import getusers, register, add_category, list_categories, list_recommendations
