@@ -11,6 +11,18 @@ https://pybit.es/deploy-flask-heroku.html
 
 The app is hosted at :http://book-recommendation-engine.herokuapp.com/
 
+Breakdown of the app:
+
+__init__.py is the main file of the flask app, it defines the routes of the app and render the web page based on url and user input.
+
+book_request.py contains the logic to fetch info from nytimes book api including categories and bestsellers. 
+
+user.py defines how the app interacts with user database in firebase, including creating user, storing user preferences.
+
+database schema:
+username: string,
+password: string,
+categories: string(comma separated)
 
 
 To run the app locally:
